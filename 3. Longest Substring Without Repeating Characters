@@ -1,32 +1,35 @@
-//Length of longest substring without repeating a digit --- O(N^2) solution
+//Length of longest substring without repeating a digit --- O(N) solution
 
 class Solution {
     public int lengthOfLongestSubstring(String s) {
-
-        HashMap<Character, Boolean> hashMap = new HashMap<>();
         
-        int maxLength = 0;
-        for(int i = 0; i<s.length(); i++)
+        int maxDistance = 0;
+        HashMap<Character, Integer> hashMap = new HashMap<>();
+        
+        int interMax = 0;
+        for(int i = 0; i < s.length(); i++)
         {
-            int insideLength = 0;
-            hashMap.clear();
-            for(int j = i; j <s.length(); j++)
+            Integer lastSeen = hashMap.get(s.charAt(i));
+            //if haven't seen it before or not part of current max length
+            if(lastSeen == null || i - interMax > lastSeen)
             {
-                if(hashMap.get(s.charAt(j)) == null)
-                {
-                    hashMap.put(s.charAt(j), new Boolean(true));
-                    insideLength++;    
-                }
-                else
-                {
-                    break;
-                }
+                interMax++;
             }
-            if(insideLength > maxLength)
+            else
             {
-                maxLength = insideLength;
+                if(interMax > maxDistance)
+                {
+                    maxDistance = interMax;
+                }
+                //current Max length is one spot after lastSeen to i -- inclusive so don't have to subtract 1
+                interMax = i - lastSeen;
             }
+
+            hashMap.put(s.charAt(i), new Integer(i));
         }
-        return maxLength;
+        
+        return Math.max(maxDistance, interMax);
+        
+        
     }
 }
