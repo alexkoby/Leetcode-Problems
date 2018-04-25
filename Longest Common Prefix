@@ -1,0 +1,39 @@
+//Completed 4/25/18 -- 
+// Longest Common Prefix
+
+class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        
+        if(strs.length == 0)
+        {
+            return "";
+        }
+        
+        int spotShortestString = 0;
+        int lengthShortestString = strs[0].length();
+        
+        for(int i = 0; i < strs.length; i++)
+        {
+            if(strs[i].length() < lengthShortestString)
+            {
+                spotShortestString = i;
+                lengthShortestString = strs[i].length();
+            }
+        }
+        
+        int howManyCharacters = 0;
+        
+        for(int i = 0; i < lengthShortestString; i++)
+        {
+            for(int j = 0; j < strs.length; j++)
+            {
+                if(strs[j].charAt(i) != strs[spotShortestString].charAt(i))
+                {
+                    return strs[spotShortestString].substring(0, howManyCharacters);
+                }
+            }
+            howManyCharacters++;
+        }
+        return strs[spotShortestString];
+    }
+}
