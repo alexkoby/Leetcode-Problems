@@ -1,0 +1,48 @@
+//Given a number n, find the largest number just smaller than n that can be formed using the same digits as n.  
+
+import java.util.Arrays;
+
+public class largestNumberJustSmaller {
+	public static void main(String[]args)
+	{
+		int x = 16239;
+		System.out.println(largestNumJustSmaller(x));
+	}
+	
+	public static int largestNumJustSmaller(int x)
+	{
+		String s = Integer.toString(x);
+		
+		for(int i = s.length() - 1; i >= 0; i--)
+		{
+			for(int j = i - 1; j >= 0; j--)
+			{
+				if(Character.getNumericValue(s.charAt(j)) > Character.getNumericValue(s.charAt(i)))
+				{
+					StringBuilder builder = new StringBuilder();
+					builder.append(s.substring(0, j));
+					builder.append(s.charAt(i));
+					String temp = s.substring(j, i);
+					if(i != s.length() - 1)
+					{
+						temp = temp + s.substring(i + 1);
+					}
+					char [] sorter = temp.toCharArray();
+					Arrays.sort(sorter);
+					StringBuilder strBuildertemp = new StringBuilder();
+					for(int k = sorter.length - 1; k >= 0; k--)
+					{
+						strBuildertemp.append(sorter[k]);
+					}
+					String newString = strBuildertemp.toString();
+					builder.append(newString);
+					return Integer.parseInt(builder.toString());				}
+			}
+		}
+		
+		return 0;	
+	}
+}
+
+
+
