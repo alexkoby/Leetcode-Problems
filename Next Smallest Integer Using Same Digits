@@ -1,4 +1,5 @@
 //Given a number n, find the largest number just smaller than n that can be formed using the same digits as n.  
+//Found Correct and More Proper Solution after a day of contemplating -- listed it below first attempt -- first solution doesn't hit all cases
 
 import java.util.Arrays;
 
@@ -41,6 +42,90 @@ public class largestNumberJustSmaller {
 		}
 		
 		return 0;	
+	}
+}
+
+
+
+
+
+
+
+
+
+//Fixed bug in that it shouldn't just try to switch with the last digit, 
+//it should try to make the digit it is switching with as close to the end as possible
+//Also got O() from O(N^2) to O(NlogN)
+
+import java.util.Arrays;
+import java.util.HashMap;
+public class largestNumberJustSmallerOptimal {
+	public static void main(String[]args) {
+		int x = 9537;
+		System.out.println(largestNumberJustSmallerOptimal(x));
+	}
+	
+	
+	public static int largestNumberJustSmallerOptimal(int number) {
+		String str = Integer.toString(number);
+		
+		HashMap<Character, Integer> hashMap = new HashMap<>();
+		
+		//Map the Character version of the number to the last index it occurred
+		for(int i = str.length() - 1; i >= 0; i--)
+		{
+			Integer value = hashMap.get(str.charAt(i));
+			if(hashMap.get(str.charAt(i)) == null)
+			{
+				hashMap.put(str.charAt(i), i);
+			}
+			
+			int lastSpotWithSmallerValue = 0;
+			char valueAtSpotWithSmallerValue = 'a';
+			//check if a smaller number has already been passed
+			for(char j = (char) (str.charAt(i) - 1); j >= '0'; j--)
+			{
+				//a
+				if(hashMap.get(j) != null)
+				{
+					if(hashMap.get(j) > lastSpotWithSmallerValue)
+					{
+						lastSpotWithSmallerValue = hashMap.get(j);
+						valueAtSpotWithSmallerValue = j;
+					}
+				}
+			}
+			
+			//If we've already passing a smaller Number
+			if (lastSpotWithSmallerValue > 0)
+			{
+				StringBuilder builder = new StringBuilder();
+				//keep characters up until the switched values the same
+				builder.append(str.substring(0, i));
+				//switch values
+				builder.append(valueAtSpotWithSmallerValue);
+				//now the value in the more significant space is smaller -- make everything else bigger --
+				//rest of string as if the two values were swapped, but sorted
+				String temp = str.substring(i, lastSpotWithSmallerValue);
+				//add values after digit switching if its not the last digit
+				if(lastSpotWithSmallerValue != str.length() - 1)
+				{
+					temp += str.substring(lastSpotWithSmallerValue + 1);
+				}
+				char [] sorter = temp.toCharArray();
+				Arrays.sort(sorter);
+				StringBuilder reverse = new StringBuilder();
+				for(int m = sorter.length - 1; m >= 0; m--)
+				{
+					reverse.append(sorter[m]);
+				}
+				
+				return Integer.parseInt(builder.toString() + reverse.toString());	
+			}
+			
+		}
+		
+		return 0;
 	}
 }
 
