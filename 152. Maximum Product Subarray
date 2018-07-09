@@ -1,0 +1,110 @@
+class Solution {
+    public int maxProduct(int[] nums) {
+        int numberConsecutiveNegatives = 0;
+        boolean repeat = false;
+        int globalMax = nums[0];
+        int interMaxProduct = 1;
+        if(nums.length == 1){
+            return nums[0];
+        }
+        int negativeNumber = 0;
+        for(int i = 0; i < nums.length; i++){
+            //Multiply by the next number
+            interMaxProduct *= nums[i];
+            
+            //If bigger than globalMax, set globalMax = interMax
+            if(interMaxProduct > globalMax){
+                globalMax = interMaxProduct;
+            }
+            
+            //If the number you multiplied by is 0, even if next number is negative, the subarray will have a 0 in it --> sum = 0
+            //Want to start over with the next value so you don't continuously multiply by 0
+            if(nums[i] == 0){
+                negativeNumber = 0;
+                interMaxProduct = 1;
+                if(numberConsecutiveNegatives % 2 == 1 && numberConsecutiveNegatives > 2){
+                    repeat = true;
+                }
+                numberConsecutiveNegatives = 0;
+            }
+            
+            //If you just multiplied by a negative number, see if there is a substring that's attachable that was negative (- * - = +)
+            //Else, keep track of this negative substring and start over and see if you will hit another negative
+            if(interMaxProduct < 0){
+                numberConsecutiveNegatives++;
+                if(negativeNumber != 0){
+                    interMaxProduct *= negativeNumber;
+                    negativeNumber = 0;
+                    
+                    if(interMaxProduct > globalMax){
+                        globalMax = interMaxProduct;
+                    }
+                    
+                }
+                else{
+                    negativeNumber = interMaxProduct;
+                    interMaxProduct = 1;                    
+                }
+
+            }
+        }
+        if(numberConsecutiveNegatives % 2 == 1 && numberConsecutiveNegatives > 2){
+            repeat = true;
+        }
+        
+        if(repeat){
+            //copy over numbers in reverse
+            int [] newArray = new int[nums.length];
+            for(int i = 0, length = nums.length; i < length; i++){
+                newArray[i] = nums[length - i - 1];
+            }
+            return Math.max(globalMax, maxProductHelper(newArray));
+        }
+        else{
+            return globalMax;
+        }       
+    }
+    
+    public int maxProductHelper(int [] nums){
+        int globalMax = nums[0];
+        int interMaxProduct = 1;
+        if(nums.length == 1){
+            return nums[0];
+        }
+        int negativeNumber = 0;
+        for(int i = 0; i < nums.length; i++){
+            //Multiply by the next number
+            interMaxProduct *= nums[i];
+            
+            //If bigger than globalMax, set globalMax = interMax
+            if(interMaxProduct > globalMax){
+                globalMax = interMaxProduct;
+            }
+            
+            //If the number you multiplied by is 0, even if next number is negative, the subarray will have a 0 in it --> sum = 0
+            //Want to start over with the next value so you don't continuously multiply by 0
+            if(nums[i] == 0){
+                negativeNumber = 0;
+                interMaxProduct = 1;
+            }
+            
+            //If you just multiplied by a negative number, see if there is a substring that's attachable that was negative (- * - = +)
+            //Else, keep track of this negative substring and start over and see if you will hit another negative
+            if(interMaxProduct < 0){
+                if(negativeNumber != 0){
+                    interMaxProduct *= negativeNumber;
+                    negativeNumber = 0;
+                    
+                    if(interMaxProduct > globalMax){
+                        globalMax = interMaxProduct;
+                    }
+                }
+                else{
+                    negativeNumber = interMaxProduct;
+                    interMaxProduct = 1;                    
+                }
+            }
+        }
+        return globalMax;
+    }
+}
