@@ -1,0 +1,38 @@
+class Solution {
+    public int minSubArrayLen(int s, int[] nums) {
+        
+        int globalFewest = Integer.MAX_VALUE;
+        int interFewest = 0;
+        int lastIndex = 0;
+        int subArrayTotal = 0;
+        boolean foundMin = false;
+
+        
+        for(int i = 0; i < nums.length; i++){
+            subArrayTotal += nums[i];
+            interFewest++;
+            //If you've achieved maximum, keep dropping off numbers
+            if(subArrayTotal >= s){
+                foundMin = true;
+                if(interFewest < globalFewest){
+                    globalFewest = interFewest;
+                }
+                while(subArrayTotal >= s){
+                    subArrayTotal -= nums[lastIndex++];
+                    interFewest--;
+                    
+                    if(s <= subArrayTotal && interFewest < globalFewest){
+                        globalFewest = interFewest;
+                    }
+                }
+            }
+        }
+        if(foundMin){
+            return globalFewest;
+        }
+        else{
+            return 0;
+        }
+        
+    }
+}
