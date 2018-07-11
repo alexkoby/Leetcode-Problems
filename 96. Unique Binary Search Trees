@@ -1,0 +1,26 @@
+class Solution {
+    public int numTrees(int n) {
+        if(n == 0){
+            return 0;
+        }
+        int [] map = new int[n + 1];
+        map[0] = 1;
+        map[1] = 1;
+       
+        return numTreesHelper(n, map);
+    }
+    
+    public int numTreesHelper(int n, int [] map){
+        if(map[n] != 0){
+            return map[n];
+        }
+        int total = 0;
+        //If 5 nodes, sum is number of ways to do left with 4 * number of ways to do right with 0
+        // + number of ways to do left with 3 * number ways to do right with 1 + waysLeft(2) * waysRight(2)....
+        for(int i = 0; i < n; i++){
+            total += numTreesHelper(i, map) * numTreesHelper(n - 1 - i, map);
+        }
+        map[n] = total;
+        return total;
+    }
+}
