@@ -1,0 +1,77 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode sortList(ListNode head) {
+        if(head == null){
+            return null;
+        }
+        
+        //1 Element is by default sorted
+        if(head.next == null){
+            return head;
+        }
+        
+        ListNode leftHalf = head;
+        ListNode rightHalf = findMiddleNodeAndSplitList(head);
+        
+        leftHalf = sortList(leftHalf);
+        rightHalf = sortList(rightHalf);
+        
+        return merge(leftHalf, rightHalf);
+    }
+    
+    public ListNode findMiddleNodeAndSplitList(ListNode head){
+        ListNode leader = head;
+        ListNode follower = head;
+        while(leader.next != null && leader.next.next != null){
+            leader = leader.next.next;
+            follower = follower.next;
+        }
+        //Last while loop never got hit -- length 1 or 2
+        
+        ListNode retval = follower.next;
+        follower.next = null;
+        
+        return retval;
+    }
+    public ListNode merge(ListNode left, ListNode right){
+        ListNode realList;
+        ListNode retval;
+        if(left.val < right.val){
+            retval = left;
+            realList = left;
+            left = left.next;
+        }
+        else{
+            retval = right;
+            realList = right;
+            right = right.next;
+        }
+        while(left != null && right != null){
+            if(left.val < right.val){
+                realList = realList.next = left;
+                left = left.next;
+            }
+            else{
+                realList = realList.next = right;
+                right = right.next;
+            }
+        }
+        //only this or the next while loop will execute because they both can't be true or you'd still be in above while loop
+        while(left != null){
+            realList = realList.next = left;
+            left = left.next;
+        }
+        while(right != null){
+            realList = realList.next = right;
+            right = right.next;
+        }
+        return retval;
+    }
+}
